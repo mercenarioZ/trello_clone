@@ -3,8 +3,8 @@ import { experimental_extendTheme as extendTheme } from '@mui/material/styles'
 
 const theme = extendTheme({
     projectCustomConst: {
-        appBarHeight: '55px',
-        boardBarHeight: '58px',
+        appBarHeight: '59px',
+        boardBarHeight: '61px',
     },
 
     colorSchemes: {
