@@ -1,7 +1,7 @@
 // Board details
 import Container from '@mui/material/Container'
 import { Fragment } from 'react'
-import AppBar from '../../components/AppBar'
+import AppBar from '~/components/AppBar'
 import BoardBar from './BoardBar'
 import BoardContent from './BoardContent'
 

@@ -1,0 +1,9 @@
+// This configuration will make Ctrl + Click with `~` works.
+{
+    "compilerOptions": {
+        "paths": {
+            "~/*": ["./src/*"]
+        }
+    }
+}
+
