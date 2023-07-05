@@ -25,6 +25,7 @@ const AppBar = () => {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 height: (theme) => theme.projectCustomConst.appBarHeight,
+                overflowX: 'auto'
             }}
         >
             <Box
@@ -49,20 +50,22 @@ const AppBar = () => {
                             color: 'primary.main',
                             fontSize: '1.5rem',
                             fontWeight: 'bold',
+                            cursor: 'pointer'
                         }}
                     >
                         Trello
                     </Typography>
                 </Box>
 
-                <Workspaces />
-                <Recent />
-                <Starred />
-                <Templates />
-
-                <Button sx={{ fontWeight: 'bold' }} variant='outlined'>
-                    Create
-                </Button>
+                <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1 }}>
+                    <Workspaces />
+                    <Recent />
+                    <Starred />
+                    <Templates />
+                    <Button sx={{ fontWeight: 'bold' }} variant='outlined'>
+                        Create
+                    </Button>
+                </Box>
             </Box>
 
             <Box
@@ -78,6 +81,7 @@ const AppBar = () => {
                     label='Search'
                     type='search'
                     size='small'
+                    sx={{ minWidth: 100 }}
                 />
                 <ModeSelect />
 
