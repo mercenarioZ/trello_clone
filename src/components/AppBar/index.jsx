@@ -1,10 +1,12 @@
 import AppsIcon from '@mui/icons-material/Apps'
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone'
 import Badge from '@mui/material/Badge'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import SvgIcon from '@mui/material/SvgIcon'
 import TextField from '@mui/material/TextField'
+import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import { ReactComponent as TrelloLogo } from '~/assets/trello.svg'
 import ModeSelect from '~/components/ModeSelect' // `~ = /src`
@@ -12,9 +14,8 @@ import Recent from './Menu/Recent'
 import Starred from './Menu/Starred'
 import Templates from './Menu/Templates'
 import Workspaces from './Menu/Workspaces'
-import Tooltip from '@mui/material/Tooltip'
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import Profile from './Profile'
+import AddToPhotosIcon from '@mui/icons-material/AddToPhotos'
 
 const AppBar = () => {
     return (
@@ -25,7 +26,7 @@ const AppBar = () => {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 height: (theme) => theme.projectCustomConst.appBarHeight,
-                overflowX: 'auto'
+                overflowX: 'auto',
             }}
         >
             <Box
@@ -50,7 +51,7 @@ const AppBar = () => {
                             color: 'primary.main',
                             fontSize: '1.5rem',
                             fontWeight: 'bold',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
                         }}
                     >
                         Trello
@@ -62,7 +63,11 @@ const AppBar = () => {
                     <Recent />
                     <Starred />
                     <Templates />
-                    <Button sx={{ fontWeight: 'bold' }} variant='outlined'>
+                    <Button
+                        sx={{ fontWeight: 'bold', margin: '5px' }}
+                        variant='outlined'
+                        startIcon={<AddToPhotosIcon />}
+                    >
                         Create
                     </Button>
                 </Box>
