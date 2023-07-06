@@ -7,7 +7,7 @@ import ListItemText from '@mui/material/ListItemText'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import React from 'react'
-import Check from '@mui/icons-material/Check';
+import Check from '@mui/icons-material/Check'
 
 const Recent = () => {
     const [anchorEl, setAnchorEl] = React.useState(null)
@@ -27,7 +27,7 @@ const Recent = () => {
                 aria-haspopup='true'
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
-                sx={{ fontWeight: 'bold' }}
+                sx={{ fontWeight: 'bold', color: 'white' }}
                 endIcon={<ExpandMoreIcon />}
             >
                 Recent

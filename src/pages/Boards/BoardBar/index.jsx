@@ -9,17 +9,17 @@ import Chip from '@mui/material/Chip'
 import Tooltip from '@mui/material/Tooltip'
 
 const MENU_STYLES = {
-    color: 'primary.main',
-    bgcolor: 'white',
+    color: 'white',
+    bgcolor: 'transparent',
     borderRadius: '8px',
     padding: '2px',
 
-    '& .MuiSvgIcon-root': {
-        color: 'primary.main',
+    '.MuiSvgIcon-root': {
+        color: 'white',
     },
 
     '&:hover': {
-        bgcolor: 'primary.70',
+        bgcolor: 'primary.50',
     },
 }
 
@@ -27,15 +27,16 @@ const BoardBar = () => {
     return (
         <Box
             sx={{
-                // backgroundColor: 'secondary.light',
                 display: 'flex',
                 width: '100%',
                 alignItems: 'center',
                 height: (theme) => theme.projectCustomConst.boardBarHeight,
                 justifyContent: 'space-between',
                 overflowX: 'auto',
-                borderTop: '1px solid #00bfa5',
+                borderBottom: '1px solid #adb2b4',
                 paddingX: 2,
+                bgcolor: (theme) =>
+                    theme.palette.mode === 'dark' ? '#34495e' : '#1976d2',
             }}
         >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -56,8 +57,13 @@ const BoardBar = () => {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                 <Button
                     startIcon={<PersonAddIcon />}
-                    sx={{ fontWeight: 'bold' }}
                     variant='outlined'
+                    sx={{
+                        fontWeight: 'bold',
+                        color: 'white',
+                        borderColor: 'white',
+                        '&:hover': { borderColor: 'white' },
+                    }}
                 >
                     Invite
                 </Button>
@@ -70,7 +76,9 @@ const BoardBar = () => {
                             width: 35,
                             height: 'auto',
                             fontSize: '0.875rem',
+                            border: 'none'
                         },
+                        gap: '5px'
                     }}
                 >
                     <Tooltip>
