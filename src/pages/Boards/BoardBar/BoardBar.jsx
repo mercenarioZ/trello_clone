@@ -33,7 +33,6 @@ const BoardBar = () => {
                 height: (theme) => theme.projectCustomConst.boardBarHeight,
                 justifyContent: 'space-between',
                 overflowX: 'auto',
-                borderBottom: '1px solid #adb2b4',
                 paddingX: 2,
                 bgcolor: (theme) =>
                     theme.palette.mode === 'dark' ? '#34495e' : '#1976d2',
@@ -73,8 +72,8 @@ const BoardBar = () => {
                     max={5}
                     sx={{
                         '& .MuiAvatar-root': {
-                            width: 35,
-                            height: 'auto',
+                            width: 30,
+                            height: 30,
                             fontSize: '0.875rem',
                             border: 'none',
                             color: 'white',
