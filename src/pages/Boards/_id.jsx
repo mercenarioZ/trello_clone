@@ -4,6 +4,7 @@ import { Fragment } from 'react'
 import AppBar from '~/components/AppBar/AppBar'
 import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
+import { mockData } from '~/apis/mock-data'
 
 const Board = () => {
     return (
@@ -17,10 +18,9 @@ const Board = () => {
             >
                 <AppBar />
 
-                {/* Board bar */}
-                <BoardBar />
+                <BoardBar board={mockData.board} />
 
-                <BoardContent />
+                <BoardContent board={mockData.board} />
             </Container>
         </Fragment>
     )

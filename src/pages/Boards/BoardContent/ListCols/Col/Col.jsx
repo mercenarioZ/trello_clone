@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import {
     AddCard,
     ContentCopy,
@@ -20,7 +21,7 @@ import Tooltip from '@mui/material/Tooltip'
 import React from 'react'
 import ListCards from './ListCards/ListCards'
 
-const Col = () => {
+const Col = ({ column }) => {
     const [anchorEl, setAnchorEl] = React.useState(null)
     const open = Boolean(anchorEl)
     const handleClick = (event) => {
@@ -60,7 +61,7 @@ const Col = () => {
                     variant='h6'
                     sx={{ fontSize: '1rem', fontWeight: 'bold' }}
                 >
-                    Title
+                    {column?.title}
                 </Typography>
 
                 {/* Dropdown menu */}
@@ -139,7 +140,7 @@ const Col = () => {
             </Box>
 
             {/* Card list */}
-            <ListCards />
+            <ListCards cards={column?.cards} />
 
             {/* Footer */}
             <Box

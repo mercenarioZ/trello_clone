@@ -1,7 +1,8 @@
+/* eslint-disable react/prop-types */
 import Box from '@mui/material/Box'
 import ListCols from './ListCols/ListCols'
 
-const BoardContent = () => {
+const BoardContent = ({ board }) => {
     return (
         // Container
         <Box
@@ -17,7 +18,7 @@ const BoardContent = () => {
                 overflowY: 'hidden',
             }}
         >
-            <ListCols />
+            <ListCols columns={board?.columns} />
         </Box>
     )
 }

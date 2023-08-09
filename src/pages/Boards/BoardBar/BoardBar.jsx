@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import AddToDriveIcon from '@mui/icons-material/AddToDrive'
 import FaceIcon from '@mui/icons-material/Face'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
@@ -23,7 +24,7 @@ const MENU_STYLES = {
     },
 }
 
-const BoardBar = () => {
+const BoardBar = ({ board }) => {
     return (
         <Box
             sx={{
@@ -43,7 +44,7 @@ const BoardBar = () => {
                     sx={MENU_STYLES}
                     clickable
                     icon={<FaceIcon />}
-                    label='Nguyen Vu is learning Full-stack!!'
+                    label={board?.title}
                 />
 
                 <Chip

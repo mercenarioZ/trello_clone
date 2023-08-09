@@ -7,23 +7,14 @@ import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
 import CardMedia from '@mui/material/CardMedia'
 
-function Card({ hideMedia }) {
-    if (hideMedia) {
+function Card({ card }) {
+    const shouldShowCardActions = () => {
         return (
-            <MuiCard
-                sx={{
-                    cursor: 'pointer',
-                    boxShadow: '0 1px 1px rgba(0, 0, 0, 0,2)',
-                    overflow: 'unset',
-                }}
-            >
-                <CardContent sx={{ padding: 1, '&:last-child': { p: 1 } }}>
-                    <Typography>Card 2</Typography>
-                </CardContent>
-            </MuiCard>
+            !!card?.memberIds?.length ||
+            !!card?.comments?.length ||
+            !!card?.attachments?.length
         )
     }
-
     return (
         <Box>
             <MuiCard
@@ -34,36 +25,48 @@ function Card({ hideMedia }) {
                     overflow: 'unset',
                 }}
             >
-                <CardMedia
-                    sx={{ height: 140 }}
-                    image='https://www.searchenginejournal.com/wp-content/uploads/2022/06/image-search-1600-x-840-px-62c6dc4ff1eee-sej.png'
-                    title='green iguana' />
+                {card?.cover && (
+                    <CardMedia sx={{ height: 140 }} image={card?.cover} />
+                )}
+
                 <CardContent sx={{ padding: 1, '&:last-child': { p: 1 } }}>
-                    <Typography>Card 1</Typography>
+                    <Typography>{card?.title}</Typography>
                 </CardContent>
-                <CardActions sx={{ p: '0 4px 8px 4px' }}>
-                    <Button
-                        sx={{ fontWeight: 'bold' }}
-                        size='small'
-                        startIcon={<Group />}
-                    >
-                        10
-                    </Button>
-                    <Button
-                        sx={{ fontWeight: 'bold' }}
-                        size='small'
-                        startIcon={<Comment />}
-                    >
-                        10
-                    </Button>
-                    <Button
-                        sx={{ fontWeight: 'bold' }}
-                        size='small'
-                        startIcon={<AttachFile />}
-                    >
-                        10
-                    </Button>
-                </CardActions>
+
+                {shouldShowCardActions() && (
+                    <CardActions sx={{ p: '0 4px 8px 4px' }}>
+                        {/* The '!!' is a trick to convert a value to boolean */}
+                        {!!card?.memberIds?.length && (
+                            <Button
+                                sx={{ fontWeight: 'bold' }}
+                                size='small'
+                                startIcon={<Group />}
+                            >
+                                {card?.memberIds?.length}
+                            </Button>
+                        )}
+
+                        {!!card?.comments?.length && (
+                            <Button
+                                sx={{ fontWeight: 'bold' }}
+                                size='small'
+                                startIcon={<Comment />}
+                            >
+                                {card?.comments?.length}
+                            </Button>
+                        )}
+
+                        {!!card?.attachments?.length && (
+                            <Button
+                                sx={{ fontWeight: 'bold' }}
+                                size='small'
+                                startIcon={<AttachFile />}
+                            >
+                                {card?.attachments?.length}
+                            </Button>
+                        )}
+                    </CardActions>
+                )}
             </MuiCard>
         </Box>
     )

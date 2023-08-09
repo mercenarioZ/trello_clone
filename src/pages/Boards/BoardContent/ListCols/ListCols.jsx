@@ -1,9 +1,11 @@
+/* eslint-disable react/prop-types */
+
 import Box from '@mui/material/Box'
 import Col from './Col/Col'
 import Button from '@mui/material/Button'
 import { NoteAdd } from '@mui/icons-material'
 
-const ListCols = () => {
+const ListCols = ({ columns }) => {
     return (
         <Box
             sx={{
@@ -18,8 +20,9 @@ const ListCols = () => {
             }}
         >
             {/* Column */}
-            <Col />
-            <Col />
+            {columns?.map((column) => (
+                <Col key={column._id} column={column} />
+            ))}
 
             <Box
                 sx={{
