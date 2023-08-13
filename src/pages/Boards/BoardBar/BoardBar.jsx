@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import AddToDriveIcon from '@mui/icons-material/AddToDrive'
 import FaceIcon from '@mui/icons-material/Face'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
