@@ -1,8 +1,11 @@
 /* eslint-disable react/prop-types */
 import Box from '@mui/material/Box'
-import ListCols from './ListCols/ListCols'
+import ListCols from './ListCols/ListColumns'
+import { mapOrder } from '~/utilities/sorts'
 
 const BoardContent = ({ board }) => {
+    const orderedColumns = mapOrder(board?.columns, board?.columnOrderIds, '_id')
+
     return (
         // Container
         <Box
@@ -18,7 +21,7 @@ const BoardContent = ({ board }) => {
                 overflowY: 'hidden',
             }}
         >
-            <ListCols columns={board?.columns} />
+            <ListCols columns={orderedColumns} />
         </Box>
     )
 }

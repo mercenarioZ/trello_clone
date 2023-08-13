@@ -20,6 +20,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Tooltip from '@mui/material/Tooltip'
 import React from 'react'
 import ListCards from './ListCards/ListCards'
+import { mapOrder } from '~/utilities/sorts'
 
 const Col = ({ column }) => {
     const [anchorEl, setAnchorEl] = React.useState(null)
@@ -30,6 +31,9 @@ const Col = ({ column }) => {
     const handleClose = () => {
         setAnchorEl(null)
     }
+
+    const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
+
     return (
         <Box
             sx={{
@@ -140,7 +144,7 @@ const Col = ({ column }) => {
             </Box>
 
             {/* Card list */}
-            <ListCards cards={column?.cards} />
+            <ListCards cards={orderedCards} />
 
             {/* Footer */}
             <Box

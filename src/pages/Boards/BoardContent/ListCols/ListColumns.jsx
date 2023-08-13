@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 
 import Box from '@mui/material/Box'
-import Col from './Col/Col'
+import Col from './Col/Column.jsx'
 import Button from '@mui/material/Button'
 import { NoteAdd } from '@mui/icons-material'
 
