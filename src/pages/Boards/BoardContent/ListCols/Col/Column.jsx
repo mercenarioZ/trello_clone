@@ -21,8 +21,20 @@ import Tooltip from '@mui/material/Tooltip'
 import React from 'react'
 import ListCards from './ListCards/ListCards'
 import { mapOrder } from '~/utilities/sorts'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
 const Col = ({ column }) => {
+    const { attributes, listeners, setNodeRef, transform, transition } =
+        useSortable({ id: column._id, data: { ...column } })
+
+    const dndkitColumnStyles = {
+        // Use CSS.Translate.toString() if you don't want to have the scale transformation applied.
+        transform: CSS.Translate.toString(transform),
+        transition,
+        touchAction: 'none', // Prevent double tap on mobile
+    }
+
     const [anchorEl, setAnchorEl] = React.useState(null)
     const open = Boolean(anchorEl)
     const handleClick = (event) => {
@@ -36,6 +48,10 @@ const Col = ({ column }) => {
 
     return (
         <Box
+            ref={setNodeRef}
+            style={dndkitColumnStyles}
+            {...attributes}
+            {...listeners}
             sx={{
                 minWidth: 300,
                 maxWidth: 300,

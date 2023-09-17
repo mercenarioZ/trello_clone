@@ -4,50 +4,60 @@ import Box from '@mui/material/Box'
 import Col from './Col/Column.jsx'
 import Button from '@mui/material/Button'
 import { NoteAdd } from '@mui/icons-material'
+import {
+    SortableContext,
+    horizontalListSortingStrategy,
+} from '@dnd-kit/sortable'
 
 const ListCols = ({ columns }) => {
     return (
-        <Box
-            sx={{
-                bgcolor: 'inherit',
-                width: '100%',
-                height: 'auto',
-                display: 'flex',
-                overflowX: 'auto',
-                overflowY: 'hidden',
-                p: '6px 0',
-                '&::webkit-scrollbar-track': { m: 1.5 },
-            }}
-        >
-            {/* Column */}
-            {columns?.map((column) => (
-                <Col key={column._id} column={column} />
-            ))}
-
+        // SortableContext requires items as an array of strings or numbers
+        <SortableContext items={columns?.map(c => c._id)} strategy={horizontalListSortingStrategy}>
             <Box
                 sx={{
-                    minWidth: 200,
-                    maxWidth: 200,
-                    mx: 2,
-                    borderRadius: '6px',
-                    height: 'fit-content',
-                    bgcolor: '#ffffff3d',
+                    bgcolor: 'inherit',
+                    width: '100%',
+                    height: 'auto',
+                    display: 'flex',
+                    overflowX: 'auto',
+                    overflowY: 'hidden',
+                    p: '6px 0',
+                    '&::webkit-scrollbar-track': { m: 1.5 },
                 }}
             >
-                <Button
-                    startIcon={<NoteAdd />}
+                {/* Column */}
+                {columns?.map((column) => (
+                    <Col
+                        key={column._id}
+                        column={column}
+                    />
+                ))}
+
+                <Box
                     sx={{
-                        color: 'white',
-                        width: '100%',
-                        justifyContent: 'flex-start',
-                        pl: 2.5,
-                        py: 1,
+                        minWidth: 200,
+                        maxWidth: 200,
+                        mx: 2,
+                        borderRadius: '6px',
+                        height: 'fit-content',
+                        bgcolor: '#ffffff3d',
                     }}
                 >
-                    Add new column
-                </Button>
+                    <Button
+                        startIcon={<NoteAdd />}
+                        sx={{
+                            color: 'white',
+                            width: '100%',
+                            justifyContent: 'flex-start',
+                            pl: 2.5,
+                            py: 1,
+                        }}
+                    >
+                        Add new column
+                    </Button>
+                </Box>
             </Box>
-        </Box>
+        </SortableContext>
     )
 }
 
