@@ -12,7 +12,10 @@ import {
 const ListCols = ({ columns }) => {
     return (
         // SortableContext requires items as an array of strings or numbers
-        <SortableContext items={columns?.map(c => c._id)} strategy={horizontalListSortingStrategy}>
+        <SortableContext
+            items={columns?.map((c) => c._id)}
+            strategy={horizontalListSortingStrategy}
+        >
             <Box
                 sx={{
                     bgcolor: 'inherit',

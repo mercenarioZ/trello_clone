@@ -25,14 +25,22 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
 const Col = ({ column }) => {
-    const { attributes, listeners, setNodeRef, transform, transition } =
-        useSortable({ id: column._id, data: { ...column } })
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({ id: column._id, data: { ...column } })
 
+    // This style will be applied to the column when it is being dragged
     const dndkitColumnStyles = {
         // Use CSS.Translate.toString() if you don't want to have the scale transformation applied.
         transform: CSS.Translate.toString(transform),
         transition,
-        touchAction: 'none', // Prevent double tap on mobile
+        height: '100%',
+        opacity: isDragging ? .7 : undefined,
     }
 
     const [anchorEl, setAnchorEl] = React.useState(null)
@@ -47,137 +55,132 @@ const Col = ({ column }) => {
     const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
 
     return (
-        <Box
+        <div
             ref={setNodeRef}
             style={dndkitColumnStyles}
             {...attributes}
-            {...listeners}
-            sx={{
-                minWidth: 300,
-                maxWidth: 300,
-                bgcolor: (theme) =>
-                    theme.palette.mode === 'dark' ? '#333643' : '#ebecf0',
-                ml: 2,
-                borderRadius: '7px',
-                height: 'fit-content',
-
-                overflowX: 'hidden',
-                maxHeight: (theme) =>
-                    `calc(${theme.projectCustomConst.boardContentHeight} 
-                    - ${theme.spacing(4)})`,
-            }}
         >
-            {/* Header */}
             <Box
+                {...listeners}
                 sx={{
-                    height: (theme) => theme.projectCustomConst.headerHeight,
-                    p: 2,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
+                    minWidth: 300,
+                    maxWidth: 300,
+                    bgcolor: (theme) =>
+                        theme.palette.mode === 'dark' ? '#333643' : '#ebecf0',
+                    ml: 2,
+                    borderRadius: '7px',
+                    height: 'fit-content',
+                    overflowX: 'hidden',
+                    maxHeight: (theme) =>
+                        `calc(${theme.projectCustomConst.boardContentHeight}
+                        - ${theme.spacing(4)})`,
                 }}
             >
-                <Typography
-                    variant='h6'
-                    sx={{ fontSize: '1rem', fontWeight: 'bold' }}
+                {/* Header */}
+                <Box
+                    sx={{
+                        height: (theme) =>
+                            theme.projectCustomConst.headerHeight,
+                        p: 2,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                    }}
                 >
-                    {column?.title}
-                </Typography>
-
-                {/* Dropdown menu */}
-                <Box>
-                    <Tooltip title='Column menu'>
-                        <ExpandMoreIcon
-                            id='basic-column-dropdown'
-                            aria-controls={
-                                open ? 'menu-column-dropdown' : undefined
-                            }
-                            aria-haspopup='true'
-                            aria-expanded={open ? 'true' : undefined}
-                            onClick={handleClick}
-                            sx={{
-                                color: 'text.primary',
-                                cursor: 'pointer',
-                            }}
-                        />
-                    </Tooltip>
-
-                    <Menu
-                        id='menu-column-dropdown'
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={handleClose}
-                        MenuListProps={{
-                            'aria-labelledby': 'basic-column-dropdown',
-                        }}
+                    <Typography
+                        variant='h6'
+                        sx={{ fontSize: '1rem', fontWeight: 'bold' }}
                     >
-                        <MenuItem>
-                            <ListItemIcon>
-                                <AddCard fontSize='small' />
-                            </ListItemIcon>
-                            <ListItemText>Add new card</ListItemText>
-                        </MenuItem>
-
-                        <MenuItem>
-                            <ListItemIcon>
-                                <ContentCut fontSize='small' />
-                            </ListItemIcon>
-                            <ListItemText>Cut</ListItemText>
-                        </MenuItem>
-
-                        <MenuItem>
-                            <ListItemIcon>
-                                <ContentCopy fontSize='small' />
-                            </ListItemIcon>
-                            <ListItemText>Copy</ListItemText>
-                        </MenuItem>
-
-                        <MenuItem>
-                            <ListItemIcon>
-                                <ContentPaste fontSize='small' />
-                            </ListItemIcon>
-                            <ListItemText>Paste</ListItemText>
-                        </MenuItem>
-
-                        <Divider />
-
-                        <MenuItem>
-                            <ListItemIcon>
-                                <Cloud fontSize='small' />
-                            </ListItemIcon>
-
-                            <ListItemText>Archieve this column</ListItemText>
-                        </MenuItem>
-                        <MenuItem>
-                            <ListItemIcon>
-                                <DeleteIcon fontSize='small' />
-                            </ListItemIcon>
-
-                            <ListItemText>Remove this column</ListItemText>
-                        </MenuItem>
-                    </Menu>
+                        {column?.title}
+                    </Typography>
+                    {/* Dropdown menu */}
+                    <Box>
+                        <Tooltip title='Column menu'>
+                            <ExpandMoreIcon
+                                id='basic-column-dropdown'
+                                aria-controls={
+                                    open ? 'menu-column-dropdown' : undefined
+                                }
+                                aria-haspopup='true'
+                                aria-expanded={open ? 'true' : undefined}
+                                onClick={handleClick}
+                                sx={{
+                                    color: 'text.primary',
+                                    cursor: 'pointer',
+                                }}
+                            />
+                        </Tooltip>
+                        <Menu
+                            id='menu-column-dropdown'
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                            MenuListProps={{
+                                'aria-labelledby': 'basic-column-dropdown',
+                            }}
+                        >
+                            <MenuItem>
+                                <ListItemIcon>
+                                    <AddCard fontSize='small' />
+                                </ListItemIcon>
+                                <ListItemText>Add new card</ListItemText>
+                            </MenuItem>
+                            <MenuItem>
+                                <ListItemIcon>
+                                    <ContentCut fontSize='small' />
+                                </ListItemIcon>
+                                <ListItemText>Cut</ListItemText>
+                            </MenuItem>
+                            <MenuItem>
+                                <ListItemIcon>
+                                    <ContentCopy fontSize='small' />
+                                </ListItemIcon>
+                                <ListItemText>Copy</ListItemText>
+                            </MenuItem>
+                            <MenuItem>
+                                <ListItemIcon>
+                                    <ContentPaste fontSize='small' />
+                                </ListItemIcon>
+                                <ListItemText>Paste</ListItemText>
+                            </MenuItem>
+                            <Divider />
+                            <MenuItem>
+                                <ListItemIcon>
+                                    <Cloud fontSize='small' />
+                                </ListItemIcon>
+                                <ListItemText>
+                                    Archieve this column
+                                </ListItemText>
+                            </MenuItem>
+                            <MenuItem>
+                                <ListItemIcon>
+                                    <DeleteIcon fontSize='small' />
+                                </ListItemIcon>
+                                <ListItemText>Remove this column</ListItemText>
+                            </MenuItem>
+                        </Menu>
+                    </Box>
+                </Box>
+                {/* Card list */}
+                <ListCards cards={orderedCards} />
+                {/* Footer */}
+                <Box
+                    sx={{
+                        height: (theme) =>
+                            theme.projectCustomConst.footerHeight,
+                        p: 2,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                    }}
+                >
+                    <Button startIcon={<AddCard />}>Add new card</Button>
+                    <Tooltip title='Drag to move'>
+                        <DragHandle sx={{ cursor: 'pointer' }} />
+                    </Tooltip>
                 </Box>
             </Box>
-
-            {/* Card list */}
-            <ListCards cards={orderedCards} />
-
-            {/* Footer */}
-            <Box
-                sx={{
-                    height: (theme) => theme.projectCustomConst.footerHeight,
-                    p: 2,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                }}
-            >
-                <Button startIcon={<AddCard />}>Add new card</Button>
-                <Tooltip title='Drag to move'>
-                    <DragHandle sx={{ cursor: 'pointer' }} />
-                </Tooltip>
-            </Box>
-        </Box>
+        </div>
     )
 }
 
