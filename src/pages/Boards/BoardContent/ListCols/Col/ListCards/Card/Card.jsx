@@ -9,14 +9,21 @@ import CardContent from '@mui/material/CardContent'
 import CardMedia from '@mui/material/CardMedia'
 
 function Card({ card }) {
-    const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-        useSortable({ id: card._id, data: { ...card } })
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = useSortable({ id: card._id, data: { ...card } })
 
     const dndkitCardStyles = {
         // Use CSS.Translate.toString() if you don't want to have the scale transformation applied.
         transform: CSS.Translate.toString(transform),
         transition,
-        opacity: isDragging ? 0.7 : undefined
+        opacity: isDragging ? 0.7 : undefined,
+        border: isDragging ? '1.4px dashed #3deeaa' : undefined,
     }
 
     const shouldShowCardActions = () => {
