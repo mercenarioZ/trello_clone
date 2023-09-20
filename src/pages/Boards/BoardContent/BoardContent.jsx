@@ -60,6 +60,76 @@ const BoardContent = ({ board }) => {
         )
     }
 
+    // Update the column order when dragging a card to another column
+    const handleMoveCardBetweenColumns = (
+        overColumn,
+        overCardId,
+        active,
+        over,
+        activeColumn,
+        activeCardId,
+        activeCardData
+    ) => {
+        setOrderedColumns((previousColumns) => {
+            // Find the index of the overCard (the card that is being dropped over)
+            const overCardIndex = overColumn.cards.findIndex(
+                (card) => card._id === overCardId
+            )
+
+            let newCardIndex
+            const isBelowOverItem =
+                active.rect.current.translated &&
+                active.rect.current.translated.top >
+                    over.rect.top + over.rect.height
+
+            const modifier = isBelowOverItem ? 1 : 0
+
+            newCardIndex =
+                overCardIndex >= 0
+                    ? overCardIndex + modifier
+                    : overColumn?.cards?.length + 1
+
+            // Why do we need to clone the previous columns? In React (and other frameworks), mutating the state directly is not recommended (or not allowed). Mutating the state directly can cause some unexpected bugs. So we need to clone the previous columns, make the changes and then return the new columns
+            const nextColumns = cloneDeep(previousColumns)
+            const nextActiveColumn = nextColumns.find(
+                (col) => col._id === activeColumn._id
+            )
+            const nextOverColumn = nextColumns.find(
+                (col) => col._id === overColumn._id
+            )
+
+            if (nextActiveColumn) {
+                // Remove the card from the active column
+                nextActiveColumn.cards = nextActiveColumn.cards.filter(
+                    (card) => card._id !== activeCardId
+                )
+
+                // Update the cardOrderIds array
+                nextActiveColumn.cardOrderIds = nextActiveColumn.cards.map(
+                    (card) => card._id
+                )
+            }
+
+            if (nextOverColumn) {
+                // nextOverColumn.cardOrderIds = nextOverColumn.cards.filter(card => card._id !== activeCardId)
+
+                // Add the card to the over column
+                // When dragging a card to another column, we need to change the columnId of that card
+                nextOverColumn.cards.splice(newCardIndex, 0, {
+                    ...activeCardData,
+                    columnId: nextOverColumn._id,
+                })
+
+                // Update the cardOrderIds array
+                nextOverColumn.cardOrderIds = nextOverColumn.cards.map(
+                    (card) => card._id
+                )
+            }
+
+            return nextColumns
+        })
+    }
+
     const handleDragStart = (event) => {
         setActiveDragItemId(event?.active?.id)
 
@@ -104,60 +174,15 @@ const BoardContent = ({ board }) => {
 
         // Handle the case when the active card is dragged over another column
         if (activeColumn._id !== overColumn._id) {
-            setOrderedColumns((previousColumns) => {
-                // Find the index of the overCard (the card that is being dropped over)
-                const overCardIndex = overColumn.cards.findIndex(
-                    (card) => card._id === overCardId
-                )
-
-                let newCardIndex
-                const isBelowOverItem =
-                    active.rect.current.translated &&
-                    active.rect.current.translated.top >
-                        over.rect.top + over.rect.height
-
-                const modifier = isBelowOverItem ? 1 : 0
-
-                newCardIndex =
-                    overCardIndex >= 0
-                        ? overCardIndex + modifier
-                        : overColumn?.cards?.length + 1
-
-                // Why do we need to clone the previous columns? Because we don't want to mutate the state directly (React doesn't like that) so we need to clone the previous columns, make the changes and then return the new columns
-                const nextColumns = cloneDeep(previousColumns)
-                const nextActiveColumn = nextColumns.find(
-                    (col) => col._id === activeColumn._id
-                )
-                const nextOverColumn = nextColumns.find(
-                    (col) => col._id === overColumn._id
-                )
-
-                if (nextActiveColumn) {
-                    // Remove the card from the active column
-                    nextActiveColumn.cards = nextActiveColumn.cards.filter(
-                        (card) => card._id !== activeCardId
-                    )
-
-                    // Update the cardOrderIds array
-                    nextActiveColumn.cardOrderIds = nextActiveColumn.cards.map(
-                        (card) => card._id
-                    )
-                }
-
-                if (nextOverColumn) {
-                    // nextOverColumn.cardOrderIds = nextOverColumn.cards.filter(card => card._id !== activeCardId)
-
-                    // Add the card to the over column
-                    nextOverColumn.cards.splice(newCardIndex, 0, activeCardData)
-
-                    // Update the cardOrderIds array
-                    nextOverColumn.cardOrderIds = nextOverColumn.cards.map(
-                        (card) => card._id
-                    )
-                }
-
-                return nextColumns
-            })
+            handleMoveCardBetweenColumns(
+                overColumn,
+                overCardId,
+                active,
+                over,
+                activeColumn,
+                activeCardId,
+                activeCardData
+            )
         }
     }
 
@@ -184,6 +209,15 @@ const BoardContent = ({ board }) => {
 
             if (oldColumnWhenDragStart._id !== overColumn._id) {
                 // Dragging card to another column
+                handleMoveCardBetweenColumns(
+                    overColumn,
+                    overCardId,
+                    active,
+                    over,
+                    activeColumn,
+                    activeCardId,
+                    activeCardData
+                )
             } else {
                 // Dragging card within the same column
 
