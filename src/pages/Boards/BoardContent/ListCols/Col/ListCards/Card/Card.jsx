@@ -45,6 +45,7 @@ function Card({ card }) {
                     boxShadow: '0 1px 1px rgba(0, 0, 0, 0,2)',
                     '&:last-child': { padding: 1.3 },
                     overflow: 'unset',
+                    display: card?.Frontend_PlaceholderCard ? 'none' : 'block',
                 }}
             >
                 {card?.cover && (

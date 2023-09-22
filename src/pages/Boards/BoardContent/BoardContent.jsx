@@ -1,22 +1,25 @@
 /* eslint-disable react/prop-types */
 import {
     DndContext,
+    DragOverlay,
     MouseSensor,
     TouchSensor,
+    closestCorners,
+    defaultDropAnimationSideEffects,
+    getFirstCollision,
+    pointerWithin,
     useSensor,
     useSensors,
-    DragOverlay,
-    defaultDropAnimationSideEffects,
-    closestCorners,
 } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
 import Box from '@mui/material/Box'
-import React from 'react'
+import { cloneDeep, isEmpty } from 'lodash'
+import React, { useRef } from 'react'
 import { mapOrder } from '~/utilities/sorts'
-import ListCols from './ListCols/ListColumns'
 import Col from './ListCols/Col/Column'
 import Card from './ListCols/Col/ListCards/Card/Card'
-import { cloneDeep } from 'lodash'
+import ListCols from './ListCols/ListColumns'
+import { generatePlaceholderCard } from '~/utilities/formatters'
 
 const ACTIVE_DRAG_ITEM_TYPE = {
     COLUMN: 'ACTIVE_DRAG_ITEM_TYPE_COLUMN',
@@ -46,6 +49,9 @@ const BoardContent = ({ board }) => {
     const [activeDragItemData, setActiveDragItemData] = React.useState(null)
     const [oldColumnWhenDragStart, setOldColumnWhenDragStart] =
         React.useState(null)
+
+    // Last collision point
+    const lastOverId = useRef(null)
 
     React.useEffect(() => {
         setOrderedColumns(
@@ -104,6 +110,13 @@ const BoardContent = ({ board }) => {
                     (card) => card._id !== activeCardId
                 )
 
+                // Add the placeholder card if all the cards are removed from the column
+                if (isEmpty(nextActiveColumn.cards)) {
+                    nextActiveColumn.cards = [
+                        generatePlaceholderCard(nextActiveColumn),
+                    ]
+                }
+
                 // Update the cardOrderIds array
                 nextActiveColumn.cardOrderIds = nextActiveColumn.cards.map(
                     (card) => card._id
@@ -119,6 +132,9 @@ const BoardContent = ({ board }) => {
                     ...activeCardData,
                     columnId: nextOverColumn._id,
                 })
+
+                // Remove the placeholder card when the column has at least one card
+                nextOverColumn.cards = nextOverColumn.cards.filter(card => !card.Frontend_PlaceholderCard)
 
                 // Update the cardOrderIds array
                 nextOverColumn.cardOrderIds = nextOverColumn.cards.map(
@@ -295,11 +311,60 @@ const BoardContent = ({ board }) => {
         setOldColumnWhenDragStart(null)
     }
 
+    // Trigger this when an active drag item is dropped
     const dropAnimation = {
         sideEffects: defaultDropAnimationSideEffects({
             styles: { active: { opacity: '.7' } },
         }),
     }
+
+    const collisionDetectionStrategy = React.useCallback(
+        (args) => {
+            if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
+                return closestCorners({ ...args })
+            }
+
+            const pointerIntersections = pointerWithin(args)
+
+            if (!pointerIntersections?.length) return
+
+            // Get the first overId in the intersections array
+            let overId = getFirstCollision(pointerIntersections, 'id')
+            // console.log("overId: ", overId)
+
+            // If there is an overId, set the lastOverId to that overId
+            if (overId) {
+                // Flickering bug fixing
+                // if the overId is a column, we will find the nearest cardId into the collision area by using closestCorners or closestCenter
+                const checkColumn = orderedColumns.find(
+                    (column) => column._id === overId
+                )
+
+                if (checkColumn) {
+                    overId = closestCorners({
+                        ...args,
+                        droppableContainers: args.droppableContainers.filter(
+                            (container) => {
+                                return (
+                                    container.id !== overId &&
+                                    checkColumn.cardOrderIds.includes(
+                                        container.id
+                                    )
+                                )
+                            }
+                        ),
+                    })[0]?.id
+                }
+
+                lastOverId.current = overId
+                return [{ id: overId }]
+            }
+
+            // If there is no overId, return the empty array, prevent the page from crashing
+            return lastOverId.current ? [{ id: lastOverId.current }] : []
+        },
+        [activeDragItemType, orderedColumns]
+    )
 
     return (
         // Container
@@ -308,7 +373,7 @@ const BoardContent = ({ board }) => {
             onDragOver={handleDragOver}
             onDragEnd={handleDragEnd}
             sensors={sensors}
-            collisionDetection={closestCorners}
+            collisionDetection={collisionDetectionStrategy}
         >
             <Box
                 sx={{
