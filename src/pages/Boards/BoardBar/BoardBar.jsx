@@ -39,12 +39,14 @@ const BoardBar = ({ board }) => {
             }}
         >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Chip
-                    sx={MENU_STYLES}
-                    clickable
-                    icon={<FaceIcon />}
-                    label={board?.title}
-                />
+                <Tooltip title={board?.description}>
+                    <Chip
+                        sx={MENU_STYLES}
+                        clickable
+                        icon={<FaceIcon />}
+                        label={board?.title}
+                    />
+                </Tooltip>
 
                 <Chip
                     sx={MENU_STYLES}

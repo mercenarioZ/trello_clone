@@ -1,12 +1,23 @@
 // Board details
 import Container from '@mui/material/Container'
-import { Fragment } from 'react'
+import React, { Fragment } from 'react'
+import { fetchBoardDetailAPI } from '~/apis'
 import AppBar from '~/components/AppBar/AppBar'
 import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
-import { mockData } from '~/apis/mock-data'
 
 const Board = () => {
+    const [board, setBoard] = React.useState(null)
+
+    React.useEffect(() => {
+        const boardId = '655623ad0200bcdda149a115'
+
+        // Call API to get board details
+        fetchBoardDetailAPI(boardId).then((response) => {
+            setBoard(response)
+        })
+    }, [])
+
     return (
         <Fragment>
             <Container
@@ -18,9 +29,9 @@ const Board = () => {
             >
                 <AppBar />
 
-                <BoardBar board={mockData.board} />
+                <BoardBar board={board} />
 
-                <BoardContent board={mockData.board} />
+                <BoardContent board={board} />
             </Container>
         </Fragment>
     )
