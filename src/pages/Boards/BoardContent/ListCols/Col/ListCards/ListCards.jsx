@@ -14,8 +14,8 @@ const ListCards = ({ cards }) => {
                     display: 'flex',
                     flexDirection: 'column',
                     gap: 1,
-                    p: '1px 6px',
-                    m: '0 5px',
+                    p: '3px 6px',
+                    m: '0 5px 5px 5px',
                     overflowX: 'hidden',
                     overflowY: 'auto',
                     maxHeight: (theme) =>

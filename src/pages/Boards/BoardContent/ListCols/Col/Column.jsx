@@ -212,6 +212,7 @@ const Col = ({ column }) => {
                 display: "flex",
                 alignItems: "center",
                 gap: 1,
+                py: 0.5
               }}
             >
               <TextField
@@ -265,7 +266,7 @@ const Col = ({ column }) => {
                     fontWeight: "bold",
                     color: "white",
                     width: "50%",
-                    py: 1,
+                    py: 0.5,
                     justifyContent: "flex-mid",
                     boxShadow: "none",
                     border: ".5px solid",
