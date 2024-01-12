@@ -1,1 +1,1 @@
-// Auth
+// Auth handles the login and signup of users
