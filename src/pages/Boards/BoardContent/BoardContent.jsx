@@ -27,7 +27,12 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: "ACTIVE_DRAG_ITEM_TYPE_CARD",
 };
 
-const BoardContent = ({ board, createNewColumn, createNewCard }) => {
+const BoardContent = ({
+  board,
+  createNewColumn,
+  createNewCard,
+  moveColumn,
+}) => {
   // Require the mouse to move by 10 pixels before activating the pointer event (drag)
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: { distance: 10 },
@@ -275,8 +280,6 @@ const BoardContent = ({ board, createNewColumn, createNewCard }) => {
     if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
       // If the over column is not the same as the active column, continue
       if (active.id !== over.id) {
-        // console.log('Dragged over column: ', over.id)
-
         // Take the old column index (from active.id)
         const oldColumnIndex = orderedColumns.findIndex(
           (col) => col._id === active.id
@@ -295,10 +298,10 @@ const BoardContent = ({ board, createNewColumn, createNewCard }) => {
           newColumnIndex
         );
 
-        // Get the new column order ids
-        // const dndOrderedColumnIds = dndOrderedColumns.map(col => col._id)
+        // Call the moveColumn function to update the column order in the database
+        moveColumn(dndOrderedColumns);
 
-        // Update the state with the new column order
+        // Update the state with the new column order. Why do we need this while we already have the new column order in the database above? Because API calls take time, so we need to update the state immediately to make the UI more responsive (Avoid flickering) 
         setOrderedColumns(dndOrderedColumns);
       }
     }

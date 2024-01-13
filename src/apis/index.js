@@ -8,6 +8,16 @@ export const fetchBoardDetailAPI = async (boardId) => {
   return response.data;
 };
 
+// Update board after drag and drop
+export const updateBoardDetailAPI = async (boardId, updatedData) => {
+  const response = await axios.put(
+    `${API_ROOT}/v1/boards/${boardId}`,
+    updatedData
+  );
+
+  return response.data;
+};
+
 export const createNewColumnAPI = async (columnData) => {
   const response = await axios.post(`${API_ROOT}/v1/columns`, columnData);
 
