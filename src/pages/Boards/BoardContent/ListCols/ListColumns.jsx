@@ -12,15 +12,16 @@ import { useState } from "react";
 import Col from "./Col/Column.jsx";
 import { toast } from "react-toastify";
 
-const ListCols = ({ columns }) => {
+const ListCols = ({ columns, createNewColumn, createNewCard }) => {
   const [openAddCol, setOpenAddCol] = useState(false);
+  const [newColumnTitle, setNewColumnTitle] = useState("");
+
   const toggleAddCol = () => {
     setOpenAddCol(!openAddCol);
     setNewColumnTitle("");
   };
-  const [newColumnTitle, setNewColumnTitle] = useState("");
 
-  const addNewColumn = () => {
+  const addNewColumn = async () => {
     // TODO: add new column to db
     if (!newColumnTitle) {
       toast.error("Please enter a title for the column", {
@@ -28,11 +29,14 @@ const ListCols = ({ columns }) => {
         autoClose: 2500,
         closeOnClick: true,
         theme: "colored",
-        hideProgressBar: true
+        hideProgressBar: true,
       });
 
       return;
     }
+
+    // API call
+    await createNewColumn({ title: newColumnTitle });
 
     // Close the form and reset the title
     toggleAddCol();
@@ -59,6 +63,7 @@ const ListCols = ({ columns }) => {
         {/* Column */}
         {columns?.map((column) => (
           <Col
+            createNewCard={createNewCard}
             key={column._id}
             column={column}
           />

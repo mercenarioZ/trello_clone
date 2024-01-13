@@ -40,8 +40,8 @@ const itemOrderIds = ['id-5', 'id-4', 'id-2', 'id-3', 'id-1']
 const key = 'id'
 
 const orderedArray = mapOrder(originalItems, itemOrderIds, key)
-console.log('Original:', originalItems)
-console.log('Ordered:', orderedArray)
+// console.log('Original:', originalItems)
+// console.log('Ordered:', orderedArray)
 /**
  * Results:
  * 

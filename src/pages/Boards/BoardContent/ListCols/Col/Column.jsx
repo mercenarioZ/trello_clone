@@ -26,8 +26,9 @@ import { CSS } from "@dnd-kit/utilities";
 import TextField from "@mui/material/TextField";
 import CloseIcon from "@mui/icons-material/Close";
 import { toast } from "react-toastify";
+import { set } from "lodash";
 
-const Col = ({ column }) => {
+const Col = ({ column, createNewCard }) => {
   const {
     attributes,
     listeners,
@@ -48,20 +49,29 @@ const Col = ({ column }) => {
 
   // state for opening/closing the add new card form
   const [openAddNewCardForm, setOpenAddNewCardForm] = React.useState(false);
-  const toggleOpenAddNewCardForm = () =>
-    setOpenAddNewCardForm(!openAddNewCardForm);
 
   // state for handling the input of the add new card form
   const [newCardTitle, setNewCardTitle] = React.useState("");
 
-  const addNewCard = () => {
+  const toggleOpenAddNewCardForm = () => {
+    setOpenAddNewCardForm(!openAddNewCardForm);
+    setNewCardTitle("");
+  };
+
+  const addNewCard = async () => {
     if (!newCardTitle.trim()) {
       toast.error("Please enter a title for the card!");
 
       return;
     }
 
-    console.log("Adding new card with title: ", newCardTitle);
+    // Call API to create new card
+    await createNewCard({
+      columnId: column._id,
+      title: newCardTitle,
+    });
+
+    toggleOpenAddNewCardForm();
   };
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -212,7 +222,7 @@ const Col = ({ column }) => {
                 display: "flex",
                 alignItems: "center",
                 gap: 1,
-                py: 0.5
+                py: 0.5,
               }}
             >
               <TextField
