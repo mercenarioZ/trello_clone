@@ -16,11 +16,10 @@ import { arrayMove } from "@dnd-kit/sortable";
 import Box from "@mui/material/Box";
 import { cloneDeep, isEmpty } from "lodash";
 import React, { useRef } from "react";
-import { mapOrder } from "~/utilities/sorts";
+import { generatePlaceholderCard } from "~/utilities/formatters";
 import Col from "./ListCols/Col/Column";
 import Card from "./ListCols/Col/ListCards/Card/Card";
 import ListCols from "./ListCols/ListColumns";
-import { generatePlaceholderCard } from "~/utilities/formatters";
 
 const ACTIVE_DRAG_ITEM_TYPE = {
   COLUMN: "ACTIVE_DRAG_ITEM_TYPE_COLUMN",
@@ -32,6 +31,7 @@ const BoardContent = ({
   createNewColumn,
   createNewCard,
   moveColumn,
+  moveCardInSameColumn,
 }) => {
   // Require the mouse to move by 10 pixels before activating the pointer event (drag)
   const mouseSensor = useSensor(MouseSensor, {
@@ -60,7 +60,7 @@ const BoardContent = ({
   const lastOverId = useRef(null);
 
   React.useEffect(() => {
-    setOrderedColumns(mapOrder(board?.columns, board?.columnOrderIds, "_id"));
+    setOrderedColumns(board.columns);
   }, [board]);
 
   // This function returns the column (id of that column) that contains the card with the given cardId
@@ -125,8 +125,6 @@ const BoardContent = ({
       }
 
       if (nextOverColumn) {
-        // nextOverColumn.cardOrderIds = nextOverColumn.cards.filter(card => card._id !== activeCardId)
-
         // Add the card to the over column
         // When dragging a card to another column, we need to change the columnId of that card
         nextOverColumn.cards.splice(newCardIndex, 0, {
@@ -239,7 +237,6 @@ const BoardContent = ({
         );
       } else {
         // Dragging card within the same column
-
         // Take the old column index (from oldColumnWhenDragStart)
         const oldCardIndex = oldColumnWhenDragStart?.cards.findIndex(
           (col) => col._id === activeDragItemId
@@ -250,12 +247,17 @@ const BoardContent = ({
           (col) => col._id === overCardId
         );
 
+        console.log("oldCardIndexInSameCol: ", oldCardIndex);
+        console.log("newCardIndexInSameCol: ", newCardIndex);
+
         // Use arrayMove. Dragging a card within the same column is the same as dragging a column
         const dndOrderedCards = arrayMove(
           oldColumnWhenDragStart?.cards,
           oldCardIndex,
           newCardIndex
         );
+
+        const dndOrderedCardIds = dndOrderedCards.map((card) => card._id);
 
         setOrderedColumns((previousColumns) => {
           const nextColumns = cloneDeep(previousColumns);
@@ -267,12 +269,16 @@ const BoardContent = ({
 
           // Update the cards array
           columnThatContainsTheCard.cards = dndOrderedCards;
-          columnThatContainsTheCard.cardOrderIds = dndOrderedCards.map(
-            (card) => card._id
-          );
+          columnThatContainsTheCard.cardOrderIds = dndOrderedCardIds;
 
           return nextColumns;
         });
+
+        moveCardInSameColumn(
+          dndOrderedCards,
+          dndOrderedCardIds,
+          oldColumnWhenDragStart._id
+        );
       }
     }
 
@@ -301,7 +307,7 @@ const BoardContent = ({
         // Call the moveColumn function to update the column order in the database
         moveColumn(dndOrderedColumns);
 
-        // Update the state with the new column order. Why do we need this while we already have the new column order in the database above? Because API calls take time, so we need to update the state immediately to make the UI more responsive (Avoid flickering) 
+        // Update the state with the new column order. Why do we need this while we already have the new column order in the database above? Because API calls take time, so we need to update the state immediately to make the UI more responsive (Avoid flickering)
         setOrderedColumns(dndOrderedColumns);
       }
     }

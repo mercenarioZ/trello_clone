@@ -21,7 +21,7 @@ const ListCols = ({ columns, createNewColumn, createNewCard }) => {
     setNewColumnTitle("");
   };
 
-  const addNewColumn = async () => {
+  const addNewColumn = () => {
     // TODO: add new column to db
     if (!newColumnTitle) {
       toast.error("Please enter a title for the column", {
@@ -36,7 +36,7 @@ const ListCols = ({ columns, createNewColumn, createNewCard }) => {
     }
 
     // API call
-    await createNewColumn({ title: newColumnTitle });
+    createNewColumn({ title: newColumnTitle });
 
     // Close the form and reset the title
     toggleAddCol();

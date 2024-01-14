@@ -1,10 +1,13 @@
 /* eslint-disable react/prop-types */
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import {
   AddCard,
   ContentCopy,
   ContentPaste,
   DragHandle,
 } from "@mui/icons-material";
+import CloseIcon from "@mui/icons-material/Close";
 import Cloud from "@mui/icons-material/Cloud";
 import ContentCut from "@mui/icons-material/ContentCut";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -17,16 +20,11 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
 import React from "react";
-import ListCards from "./ListCards/ListCards";
-import { mapOrder } from "~/utilities/sorts";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import TextField from "@mui/material/TextField";
-import CloseIcon from "@mui/icons-material/Close";
 import { toast } from "react-toastify";
-import { set } from "lodash";
+import ListCards from "./ListCards/ListCards";
 
 const Col = ({ column, createNewCard }) => {
   const {
@@ -58,15 +56,14 @@ const Col = ({ column, createNewCard }) => {
     setNewCardTitle("");
   };
 
-  const addNewCard = async () => {
+  const addNewCard = () => {
     if (!newCardTitle.trim()) {
       toast.error("Please enter a title for the card!");
-
       return;
     }
 
     // Call API to create new card
-    await createNewCard({
+    createNewCard({
       columnId: column._id,
       title: newCardTitle,
     });
@@ -83,7 +80,7 @@ const Col = ({ column, createNewCard }) => {
     setAnchorEl(null);
   };
 
-  const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, "_id");
+  const orderedCards = column.cards;
 
   return (
     <div
