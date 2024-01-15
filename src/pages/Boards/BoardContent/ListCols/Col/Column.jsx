@@ -216,10 +216,12 @@ const Col = ({ column, createNewCard }) => {
             <Box
               sx={{
                 height: "100%",
+                flexGrow: 1,
                 display: "flex",
                 alignItems: "center",
-                gap: 1,
-                py: 0.5,
+                justifyContent: "space-between",
+                gap: 1.5,
+                py: 0.7,
               }}
             >
               <TextField
@@ -264,8 +266,7 @@ const Col = ({ column, createNewCard }) => {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  borderRadius: "6px",
-                  gap: 2,
+                  justifyContent: "flex-end",
                 }}
               >
                 <Button
@@ -273,7 +274,7 @@ const Col = ({ column, createNewCard }) => {
                     fontWeight: "bold",
                     color: "white",
                     width: "50%",
-                    py: 0.5,
+                    p: 0.3,
                     justifyContent: "flex-mid",
                     boxShadow: "none",
                     border: ".5px solid",
@@ -292,13 +293,14 @@ const Col = ({ column, createNewCard }) => {
 
                 <Button
                   sx={{
-                    justifyContent: "flex-mid",
+                    justifyContent: "flex-end",
                     color: "white",
-                    width: "6%",
+                    py: 0.5,
                     "&:hover": {
                       bgcolor: "transparent",
                       color: "red",
                     },
+                    maxWidth: "10%",
                   }}
                   onClick={toggleOpenAddNewCardForm}
                 >

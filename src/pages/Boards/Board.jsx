@@ -143,12 +143,19 @@ const Board = () => {
     setBoard(updatedBoard);
 
     // API calling
+    let currentCardOrderIds = orderedColumns.find(
+      (col) => col._id === currentColumnId
+    )?.cardOrderIds;
+
+    // Send empty array to server if the current column has no cards. Because server will throw error if we send the array with only placeholder card (not pass the validation)
+    if (currentCardOrderIds[0].includes("placeholder")) {
+      currentCardOrderIds = [];
+    }
+
     moveCardToAnotherColumnAPI({
       currentCardId,
       currentColumnId,
-      currentCardOrderIds: orderedColumns.find(
-        (column) => column._id === currentColumnId
-      )?.cardOrderIds,
+      currentCardOrderIds,
       nextColumnId,
       nextCardOrderIds: orderedColumns.find(
         (column) => column._id === nextColumnId
