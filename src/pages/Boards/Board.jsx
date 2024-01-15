@@ -6,6 +6,7 @@ import React, { Fragment } from "react";
 import {
   createNewCardAPI,
   createNewColumnAPI,
+  deleteColumnAPI,
   fetchBoardDetailAPI,
   moveCardToAnotherColumnAPI,
   updateBoardDetailAPI,
@@ -16,6 +17,7 @@ import { generatePlaceholderCard } from "~/utilities/formatters";
 import { mapOrder } from "~/utilities/sorts";
 import BoardBar from "./BoardBar/BoardBar";
 import BoardContent from "./BoardContent/BoardContent";
+import { toast } from "react-toastify";
 
 const Board = () => {
   const [board, setBoard] = React.useState(null);
@@ -171,6 +173,29 @@ const Board = () => {
     });
   };
 
+  // Delete column from board
+  const deleteCol = (columnIdToBeDeleted) => {
+    console.log(columnIdToBeDeleted);
+
+    // Update board state
+    const updatedBoard = { ...board };
+    updatedBoard.columns = updatedBoard.columns.filter(
+      (column) => column._id !== columnIdToBeDeleted
+    );
+    updatedBoard.columnOrderIds = updatedBoard.columnOrderIds.filter(
+      (columnId) => columnId !== columnIdToBeDeleted
+    );
+    setBoard(updatedBoard);
+
+    // Call API to delete column
+    deleteColumnAPI(columnIdToBeDeleted).then((res) => {
+      console.log(res);
+      
+      // Display toast message
+      toast.success(res.message)
+    });
+  };
+
   // Create a loading screen while waiting for board data
   if (!board) {
     return (
@@ -209,6 +234,7 @@ const Board = () => {
           createNewColumn={createNewColumn}
           moveCardInSameColumn={moveCardInSameColumn}
           moveCardToAnotherColumn={moveCardToAnotherColumn}
+          deleteCol={deleteCol}
         />
       </Container>
     </Fragment>

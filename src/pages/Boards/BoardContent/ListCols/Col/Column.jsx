@@ -22,11 +22,12 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import Tooltip from "@mui/material/Tooltip";
+import { useConfirm } from "material-ui-confirm";
 import React from "react";
 import { toast } from "react-toastify";
 import ListCards from "./ListCards/ListCards";
 
-const Col = ({ column, createNewCard }) => {
+const Col = ({ column, createNewCard, deleteCol }) => {
   const {
     attributes,
     listeners,
@@ -81,6 +82,30 @@ const Col = ({ column, createNewCard }) => {
   };
 
   const orderedCards = column.cards;
+
+  // useConfirm hook from material-ui-confirm
+  const confirm = useConfirm();
+  const handleDeleteColumn = () => {
+    confirm({
+      title: "Delete column",
+      description: `This will delete the column ${column.title} and all cards in it. Are you sure?`,
+      confirmationText: "Delete",
+      confirmationButtonProps: {
+        variant: "outlined",
+        color: "warning",
+      },
+      cancellationButtonProps: {
+        color: "inherit",
+      },
+    })
+      .then(() => {
+        deleteCol(column._id);
+        console.log("Deleted column name: ", column.title);
+      })
+      .catch((error) => {
+        console.log("Delete column error: ", error);
+      });
+  };
 
   return (
     <div
@@ -140,13 +165,26 @@ const Col = ({ column, createNewCard }) => {
               anchorEl={anchorEl}
               open={open}
               onClose={handleClose}
+              onClick={handleClose}
               MenuListProps={{
                 "aria-labelledby": "basic-column-dropdown",
               }}
             >
-              <MenuItem>
+              <MenuItem
+                sx={{
+                  "&:hover": {
+                    color: "success.light",
+                    "& .add-card-icon": {
+                      color: "success.light",
+                    },
+                  },
+                }}
+              >
                 <ListItemIcon>
-                  <AddCard fontSize="small" />
+                  <AddCard
+                    className="add-card-icon"
+                    fontSize="small"
+                  />
                 </ListItemIcon>
                 <ListItemText>Add new card</ListItemText>
               </MenuItem>
@@ -175,17 +213,33 @@ const Col = ({ column, createNewCard }) => {
                 </ListItemIcon>
                 <ListItemText>Archieve this column</ListItemText>
               </MenuItem>
-              <MenuItem>
+
+              {/* Delete button */}
+              <MenuItem
+                sx={{
+                  "&:hover": {
+                    color: "warning.dark",
+                    "& .delete-icon": {
+                      color: "warning.dark",
+                    },
+                  },
+                }}
+                onClick={handleDeleteColumn}
+              >
                 <ListItemIcon>
-                  <DeleteIcon fontSize="small" />
+                  <DeleteIcon
+                    className="delete-icon"
+                    fontSize="small"
+                  />
                 </ListItemIcon>
-                <ListItemText>Remove this column</ListItemText>
+                <ListItemText>Delete this column</ListItemText>
               </MenuItem>
             </Menu>
           </Box>
         </Box>
         {/* Card list */}
         <ListCards cards={orderedCards} />
+
         {/* Footer */}
         <Box
           sx={{

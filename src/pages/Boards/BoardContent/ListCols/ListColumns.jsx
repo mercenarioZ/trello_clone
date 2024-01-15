@@ -12,7 +12,7 @@ import { useState } from "react";
 import Col from "./Col/Column.jsx";
 import { toast } from "react-toastify";
 
-const ListCols = ({ columns, createNewColumn, createNewCard }) => {
+const ListCols = ({ columns, createNewColumn, createNewCard, deleteCol }) => {
   const [openAddCol, setOpenAddCol] = useState(false);
   const [newColumnTitle, setNewColumnTitle] = useState("");
 
@@ -64,6 +64,7 @@ const ListCols = ({ columns, createNewColumn, createNewCard }) => {
         {columns?.map((column) => (
           <Col
             createNewCard={createNewCard}
+            deleteCol={deleteCol}
             key={column._id}
             column={column}
           />

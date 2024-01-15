@@ -51,3 +51,9 @@ export const moveCardToAnotherColumnAPI = async (updatedData) => {
     console.log("Error in moveCardToAnotherColumnAPI: ", error);
   }
 };
+
+export const deleteColumnAPI = async (columnId) => {
+  const response = await axios.delete(`${API_ROOT}/v1/columns/${columnId}`);
+
+  return response.data;
+};
