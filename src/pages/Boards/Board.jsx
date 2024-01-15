@@ -78,10 +78,18 @@ const Board = () => {
     );
 
     if (updatedColumn) {
-      updatedColumn.cards.push(response);
-      updatedColumn.cardOrderIds.push(response._id);
-      setBoard(updatedBoard);
+      if (updatedColumn.cards.some((card) => card.Frontend_PlaceholderCard)) {
+        updatedColumn.cards = [response];
+        updatedColumn.cardOrderIds = [response._id];
+      } else {
+        updatedColumn.cards.push(response);
+        updatedColumn.cardOrderIds.push(response._id);
+      }
     }
+
+    console.log(updatedColumn);
+
+    setBoard(updatedBoard);
   };
 
   // Call API to update the column order (columnOrderIds array)
