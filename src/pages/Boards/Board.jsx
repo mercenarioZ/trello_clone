@@ -1,21 +1,21 @@
 // Board details
+import { Box, CircularProgress } from "@mui/material";
 import Container from "@mui/material/Container";
+import { isEmpty } from "lodash";
 import React, { Fragment } from "react";
 import {
-  fetchBoardDetailAPI,
-  createNewColumnAPI,
   createNewCardAPI,
+  createNewColumnAPI,
+  fetchBoardDetailAPI,
+  moveCardToAnotherColumnAPI,
   updateBoardDetailAPI,
   updateColumnAPI,
 } from "~/apis";
 import AppBar from "~/components/AppBar/AppBar";
-import BoardBar from "./BoardBar/BoardBar";
-import BoardContent from "./BoardContent/BoardContent";
-import { isEmpty } from "lodash";
 import { generatePlaceholderCard } from "~/utilities/formatters";
 import { mapOrder } from "~/utilities/sorts";
-import { CircularProgress } from "@mui/material";
-import { Box } from "@mui/material";
+import BoardBar from "./BoardBar/BoardBar";
+import BoardContent from "./BoardContent/BoardContent";
 
 const Board = () => {
   const [board, setBoard] = React.useState(null);
@@ -25,7 +25,11 @@ const Board = () => {
 
     // Call API to get board details
     fetchBoardDetailAPI(boardId).then((response) => {
-      response.columns = mapOrder(response.columns, response.columnOrderIds, "_id");
+      response.columns = mapOrder(
+        response.columns,
+        response.columnOrderIds,
+        "_id"
+      );
 
       // Add placeholder column to board to fix the drag and drop bug
       response.columns.forEach((column) => {
@@ -81,12 +85,12 @@ const Board = () => {
   };
 
   // Call API to update the column order (columnOrderIds array)
-  const moveColumn = (dndOrderedColumn) => {
-    const afterMovingColumnOrderIds = dndOrderedColumn.map((col) => col._id);
+  const moveColumn = (orderedColumns) => {
+    const afterMovingColumnOrderIds = orderedColumns.map((col) => col._id);
 
     // update board before calling API
     const updatedBoard = { ...board };
-    updatedBoard.columns = dndOrderedColumn;
+    updatedBoard.columns = orderedColumns;
     updatedBoard.columnOrderIds = afterMovingColumnOrderIds;
     setBoard(updatedBoard);
 
@@ -113,6 +117,43 @@ const Board = () => {
 
     // Call API for updating card order in database
     updateColumnAPI(columnId, { cardOrderIds: orderedCardIds });
+  };
+
+  /**
+   * Function handle moving card to another column
+   *
+   * `Step 1`: Remove card from the current column by updating the `cardOrderIds` array in the current column
+   *
+   * `Step 2`: Add card to the new column by updating the `cardOrderIds` array in the new column
+   *
+   * `Step 3`: Update the `columnId` field of the dragged card
+   */
+  const moveCardToAnotherColumn = (
+    currentCardId,
+    currentColumnId,
+    nextColumnId,
+    orderedColumns
+  ) => {
+    // update board UI before calling API
+    const orderedColumnIds = orderedColumns.map((col) => col._id);
+    const updatedBoard = { ...board };
+
+    updatedBoard.columns = orderedColumns;
+    updatedBoard.columnOrderIds = orderedColumnIds;
+    setBoard(updatedBoard);
+
+    // API calling
+    moveCardToAnotherColumnAPI({
+      currentCardId,
+      currentColumnId,
+      currentCardOrderIds: orderedColumns.find(
+        (column) => column._id === currentColumnId
+      )?.cardOrderIds,
+      nextColumnId,
+      nextCardOrderIds: orderedColumns.find(
+        (column) => column._id === nextColumnId
+      )?.cardOrderIds,
+    });
   };
 
   // Create a loading screen while waiting for board data
@@ -152,6 +193,7 @@ const Board = () => {
           board={board}
           createNewColumn={createNewColumn}
           moveCardInSameColumn={moveCardInSameColumn}
+          moveCardToAnotherColumn={moveCardToAnotherColumn}
         />
       </Container>
     </Fragment>

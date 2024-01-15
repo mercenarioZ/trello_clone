@@ -32,6 +32,7 @@ const BoardContent = ({
   createNewCard,
   moveColumn,
   moveCardInSameColumn,
+  moveCardToAnotherColumn,
 }) => {
   // Require the mouse to move by 10 pixels before activating the pointer event (drag)
   const mouseSensor = useSensor(MouseSensor, {
@@ -41,7 +42,7 @@ const BoardContent = ({
   // Tap and hold for 250ms before activating the touch event (drag), and allow a 5px shift before cancelling the event
   const touchSensor = useSensor(TouchSensor, {
     // delay by 250ms which means that the user has to hold the element for 250ms before it can be dragged
-    // tolerance of 5px which means that the user can move their finger up to 5px before the drag is cancelled
+    // tolerance means that the user can move their finger up to 30px before the drag is cancelled
     activationConstraint: { delay: 250, tolerance: 30 },
   });
 
@@ -78,7 +79,8 @@ const BoardContent = ({
     over,
     activeColumn,
     activeCardId,
-    activeCardData
+    activeCardData,
+    triggerFrom
   ) => {
     setOrderedColumns((previousColumns) => {
       // Find the index of the overCard (the card that is being dropped over)
@@ -143,6 +145,16 @@ const BoardContent = ({
         );
       }
 
+      // Just call API when the trigger is handleDragEnd
+      if (triggerFrom === "handleDragEnd") {
+        moveCardToAnotherColumn(
+          activeCardId,
+          oldColumnWhenDragStart._id,
+          nextOverColumn._id,
+          nextColumns
+        );
+      }
+
       return nextColumns;
     });
   };
@@ -198,7 +210,8 @@ const BoardContent = ({
         over,
         activeColumn,
         activeCardId,
-        activeCardData
+        activeCardData,
+        "handleDragOver"
       );
     }
   };
@@ -233,7 +246,8 @@ const BoardContent = ({
           over,
           activeColumn,
           activeCardId,
-          activeCardData
+          activeCardData,
+          "handleDragEnd"
         );
       } else {
         // Dragging card within the same column
