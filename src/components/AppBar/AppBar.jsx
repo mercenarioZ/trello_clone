@@ -62,7 +62,7 @@ const AppBar = () => {
               cursor: "pointer",
             }}
           >
-            Trellio
+            Chello
           </Typography>
         </Box>
 
